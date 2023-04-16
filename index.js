@@ -15,7 +15,7 @@ dbConncet(DATABASE_URL);
 app.use(express.json());
 
 app.get("/" , (req , res) => {
-    res.send("hii")
+    res.send("hlw from the other side...")
 })
 
 

@@ -1,5 +1,5 @@
 
-const taskModel = require("../../model/task.js");
+const taskModel = require("../model/task.js");
 
 // get task
 

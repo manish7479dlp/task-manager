@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const {createTask, deleteTask , getTask , updateTask} = require("../controller/task/task");
+const {createTask, deleteTask , getTask , updateTask} = require("../controller/task");
 
 route.get("/get/:reference", getTask);
 route.post("/create", createTask);

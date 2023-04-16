@@ -4,6 +4,7 @@ require("dotenv").config();
 const app = express();
 const dbConncet = require("./src/dbConncet/dbConnect.js")
 const taskRoute = require("./src/router/task.js");
+const userRoute = require("./src/router/user")
 const DATABASE_URL = process.env.DATABASE_URL;
 
 
@@ -18,7 +19,9 @@ app.get("/" , (req , res) => {
 })
 
 
-//integrate route
+//integrate user route
+app.use("/api/user" , userRoute);
+//integrate task route
 app.use("/api/task" , taskRoute);
 
 

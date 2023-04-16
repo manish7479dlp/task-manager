@@ -1,6 +1,7 @@
 const userModel = require("../model/user");
-const taskModel = require("../model/task")
+const taskModel = require("../model/task");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // user Registration
 
@@ -8,7 +9,7 @@ const userRegistration = async (req, res) => {
   const { userName, password, confirmPassword } = req.body;
 
   if (userName && password && confirmPassword) {
-    const user = await userModel.findOne(userName);
+    const user = await userModel.findOne({ userName: userName });
 
     if (!user) {
       if (password === confirmPassword) {
@@ -19,7 +20,20 @@ const userRegistration = async (req, res) => {
             password: hashPassword,
           });
 
-          res.send({ status: "Success", message: "Registration Successful.." , userId : data._id });
+          await data.save();
+
+          const token = jwt.sign(
+            { userID: data._id },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: "5d" }
+          );
+
+          res.send({
+            status: "Success",
+            message: "Registration Successful..",
+            userId: data._id,
+            token: token,
+          });
         } catch (error) {
           res.send({
             status: "Failed",
@@ -47,12 +61,22 @@ const userLogin = async (req, res) => {
 
   if (userName && password) {
     try {
-      const user = await userModel.findOne(userName);
+      const user = await userModel.findOne({ userName: userName });
 
       if (user) {
-        const isMatch = await bcrypt.compare(user.password, password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
-            res.send({status: "Success" , userTask: await taskModel.find(user._id), userId : user._id})
+          const token = jwt.sign(
+            { userID: user._id },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: "5d" }
+          );
+          res.send({
+            status: "Success",
+            userTask: await taskModel.find(user._id),
+            userId: user._id,
+            token: token,
+          });
         } else {
           res.send({ status: "Failed", message: "Invalid User." });
         }
@@ -67,5 +91,4 @@ const userLogin = async (req, res) => {
   }
 };
 
-
-module.exports = {userLogin , userRegistration};
+module.exports = { userLogin, userRegistration };

@@ -6,6 +6,7 @@ const dbConncet = require("./src/dbConncet/dbConnect.js")
 const taskRoute = require("./src/router/task.js");
 const userRoute = require("./src/router/user")
 const DATABASE_URL = process.env.DATABASE_URL;
+const port = process.env.PORT || 8000;
 
 
 //connect database
@@ -25,6 +26,6 @@ app.use("/api/user" , userRoute);
 app.use("/api/task" , taskRoute);
 
 
-app.listen(8000 , ()=> {
+app.listen(port , ()=> {
     console.log("Server is running..");
 })
